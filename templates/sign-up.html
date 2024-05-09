@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" >
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="Gab_brenn" name="author">
+        
+        <!-- Theme CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/theme.bundle.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/theme.rtl.bundle.css') }}">
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+        
+        <!-- Page Title -->
+        <title>Sign Up | TaskMaster</title>
+    </head>
+
+    <body class="d-flex align-items-center bg-light-green">
+
+        <!-- MAIN CONTENT -->
+        <main class="container">
+            <div class="row align-items-center justify-content-center vh-100">
+                <div class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4 col-xxl-3 py-6 card">
+
+                    <!-- Title -->
+                    <h1 class="mb-2 text-center">
+                        Sign Up
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-secondary text-center">
+                        Register to get your new account
+                    </p>
+                    {% if error %}
+                        <p style="color: red;">{{ error }}</p>
+                    {% endif %}
+                    <!-- Form -->
+                    <form action="/submit" method="post">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-4">
+
+                                    <!-- Label -->
+                                    <label class="form-label">
+                                        User name
+                                    </label>
+    
+                                    <!-- Input -->
+                                    <input type="text" value="{{ name }}" name="user_name" class="form-control" placeholder="Your User name">
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="mb-4">
+
+                                    <!-- Label -->
+                                    <label class="form-label">
+                                        Email Address
+                                    </label>
+    
+                                    <!-- Input -->
+                                    <input type="email" value="{{ email }}" name="email" class="form-control" placeholder="Your email address">
+                                </div>
+                            </div>
+                        </div> <!-- / .row -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-4">
+
+                                    <!-- Label -->
+                                    <label class="form-label">
+                                        Password
+                                    </label>
+    
+                                    <!-- Input -->
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" name="password" class="form-control" autocomplete="off" data-toggle-password-input placeholder="Your password">
+                                        
+                                        <button type="button" class="input-group-text px-4 text-secondary link-primary" data-toggle-password></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-4">
+
+                                    <!-- Label -->
+                                    <label class="form-label">
+                                        Confirm password
+                                    </label>
+    
+                                    <!-- Input -->
+                                    <div class="input-group input-group-merge">
+                                        <input type="password" name="cpassword" class="form-control" autocomplete="off" data-toggle-password-input placeholder="Your password again">
+                                        
+                                        <button type="button" class="input-group-text px-4 text-secondary link-primary" data-toggle-password></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- / .row -->
+
+                        <div class="form-check">
+
+                            <!-- Input -->
+                            <input type="checkbox" class="form-check-input" id="agree">
+
+                            <!-- Label -->
+                            <label class="form-check-label" for="agree">
+                                I agree with <a href="javascript: void(0);">Terms & Conditions</a> and have understood <a href="javascript: void(0);">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <div class="row align-items-center text-center">
+                            <div class="col-12">
+
+                                <!-- Button -->
+                                <button type="submit" class="btn w-100 btn-primary mt-6 mb-2">Get started</button>
+                            </div>
+
+                            <div class="col-12">
+
+                                <!-- Link -->
+                                <small class="mb-0 text-muted">Already registered? <a href="{{url_for('sign_in')}}" class="fw-semibold">Login</a></small>
+                            </div>
+                        </div> <!-- / .row -->
+                    </form>
+                </div>
+            </div> <!-- / .row -->
+        </main> <!-- / main -->
+        <script src="{{ url_for('static', filename='assets/js/theme.bundle.js') }}"></script>
+    </body>
+</html>

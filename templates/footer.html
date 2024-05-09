@@ -1,0 +1,157 @@
+<!-- Add new task Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="taskModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="needs-validation" action="/add-task" method="post" novalidate id="taskForm">
+                <!-- Header -->
+                <div class="modal-header pb-0">
+                    <h3 id="taskModalTitle" class="modal-title">Create New Task</h3>
+                </div>
+                <!-- End Header -->
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Title</label>
+                        <input type="text" name="taskTitle" class="form-control" id="taskTitle" placeholder="Title of the task" required>
+                        <div class="invalid-feedback">Please add a task title</div>
+
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="taskPriority" class="form-label">Priority</label>
+                                <select class="form-select" name="taskPriority" id="taskPriority" required data-select='{
+                                    "placeholder": "Choose..."
+                                }'>
+                                    <option value="" label="priority placeholder"></option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <div class="invalid-feedback">Please select priority</div>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description" placeholder="Description/details of the task" rows="5"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="dueDate" class="form-label">Due Date</label>
+                                <input type="datetime-local" name="dueDate" class="form-control" id="dueDate" placeholder="MM/DD/YYYY" data-flatpickr>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                </div>
+                <!-- End Body -->
+
+                <!-- Footer -->
+                <div class="modal-footer pt-0">
+
+                    <!-- Button -->
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+                    <!-- Button -->
+                    <button type="submit" class="btn btn-primary" id="btnSaveEvent">Save</button>
+                </div>
+                <!-- End Footer -->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Add new Team Task Modal -->
+<div class="modal fade" id="teamTask" tabindex="-1" role="dialog" aria-labelledby="taskModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="needs-validation" action="/team" method="post" novalidate id="taskForm">
+                <!-- Header -->
+                <div class="modal-header pb-0">
+                    <h3 id="taskModalTitle" class="modal-title">Create New Team Task</h3>
+                </div>
+                <!-- End Header -->
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Title</label>
+                        <input type="text" name="taskTitle" class="form-control" id="taskTitle" placeholder="Title of the task" required>
+                        <div class="invalid-feedback">Please add a task title</div>
+
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="taskPriority" class="form-label">Priority</label>
+                                <select class="form-select" name="taskPriority" id="taskPriority" required data-select='{
+                                    "placeholder": "Choose..."
+                                }'>
+                                    <option value="" label="priority placeholder"></option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                                <div class="invalid-feedback">Please select priority</div>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description" placeholder="Description/details of the task" rows="5"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="dueDate" class="form-label">Due Date</label>
+                                <input type="datetime-local" name="dueDate" class="form-control" id="dueDate" placeholder="MM/DD/YYYY" data-flatpickr>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                </div>
+                <!-- End Body -->
+
+                <!-- Footer -->
+                <div class="modal-footer pt-0">
+
+                    <!-- Button -->
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+                    <!-- Button -->
+                    <button type="submit" class="btn btn-primary" id="btnSaveEvent">Save</button>
+                </div>
+                <!-- End Footer -->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Footer-->
+            <!-- Footer -->
+            <footer class="mt-auto">
+                <div class="container-fluid mt-4 mb-6 text-muted">
+                    <div class="row justify-content-between">
+                        <div class="col">
+                            © Gab_brenn. 2024 Alx.
+                        </div>
+                    </div> <!-- / .row -->
+                </div>
+            </footer>
+            
+        </main> <!-- / main -->
+
+        <!-- JAVASCRIPT-->
+        <!-- Theme JS -->
+        <script src="{{ url_for('static', filename='assets/js/theme.bundle.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
+
+      </body>
+</html>

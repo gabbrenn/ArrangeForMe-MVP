@@ -1,0 +1,154 @@
+
+{% include 'header.html' %}
+            <div class="container-fluid">
+
+                <!-- Title -->
+                <h1 class="h2">
+                    My Over Due Tasks
+                </h1>
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                {% for message in messages %}
+                <div class="row">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <div class="row">
+                    <div class="col-xxl-12 d-flex">
+
+                        <!-- Card -->
+                        <div class="card border-0 flex-fill w-100">
+                            <div class="card-header border-0 card-header-space-between">
+                                
+                                <!-- Title -->
+                                <h2 class="card-header-title h4 text-uppercase">
+                                    OverDue Task
+                                </h2>
+                                
+                            </div>
+
+                            <!-- Table -->
+                            <div class="table-responsive">
+                                <table id="projectsTable" class="table table-striped align-middle table-edge table-nowrap mb-0">
+                                    <tbody>
+                                        {% if tasks %}
+                                            {% for task in tasks %}
+                                                <tr>
+                                                    <td class="d-flex justify-content-between" colspan="2">
+                                                        <span>
+                                                            {{ task[3] }}
+                                                            <i class="text-primary"> 
+                                                                {{ task[5].strftime('%Y-%m-%d %H:%M') }}
+                                                            </i>
+                                                            {% if task[7] == 'Completed' %}
+                                                            <span class="badge text-bg-primary">Complete</span>
+                                                            
+                                                            {% elif today > task[5] %}
+                                                            <span class="badge text-bg-danger">Over due</span>
+                                                            {% endif %}
+                                                            
+                                                            <br>
+                                                            <i class="text-muted">{{ task[4] }}</i>
+                                                        </span>
+                                                        <span>
+                                                            <a href="/complete/{{task[0]}}/overdue" class="mx-1 text-success" onclick="return confirm('Is It Task Complete?')" data-bs-toggle="tooltip" title="Complete"><i class="bi-check-circle" style="font-size: 1.3rem;"></i></a>
+                                                            <a href="/update-task/overdue" class="mx-1" data-bs-toggle="modal" data-bs-target="#UpdatetaskModal{{task[0]}}" id="btnAddTask">
+                                                                <i class="bi-pencil-square" style="font-size: 1.3rem;" data-bs-toggle="tooltip" title="Edit"></i>
+                                                            </a>
+                                                            <a href="/delete/{{task[0]}}/overdue" class="mx-1 text-danger" onclick="return confirm('You want to delete this task?')" data-bs-toggle="tooltip" title="Delete"><i class="bi-trash" style="font-size: 1.3rem;"></i></a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+
+                                                <!-- Update task Modal -->
+<div class="modal fade" id="UpdatetaskModal{{task[0]}}" tabindex="-1" role="dialog" aria-labelledby="taskModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form class="needs-validation" action="/update-task/index" method="post" novalidate id="taskForm">
+                <!-- Header -->
+                <div class="modal-header pb-0">
+                    <h3 id="taskModalTitle" class="modal-title">Update Task</h3>
+                </div>
+                <!-- End Header -->
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="hidden" value="{{task[0]}}" name="id">
+                        <label for="taskTitle" class="form-label">Title</label>
+                        <input type="text" name="taskTitle" value="{{task[3]}}" class="form-control" id="taskTitle" placeholder="Title of the task" required>
+                        <div class="invalid-feedback">Please add a task title</div>
+
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="taskPriority" class="form-label">Priority</label>
+                                <select class="form-select" name="taskPriority" id="taskPriority" required data-select='{
+                                    "placeholder": "Choose..."
+                                }'>
+                                    <option value="" label="priority placeholder"></option>
+                                    <option value="Low" {% if task[6] == "Low" %} selected {% endif %}>Low</option>
+                                    <option value="Medium" {% if task[6] == "Medium" %} selected {% endif %}>Medium</option>
+                                    <option value="High" {% if task[6] == "High" %} selected {% endif %}>High</option>
+                                </select>
+                                <div class="invalid-feedback">Please select priority</div>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description" placeholder="Description/details of the task" rows="5">{{task[4]}}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-lg">
+                                <label for="dueDate" class="form-label">Due Date</label>
+                                <input type="datetime-local" value="{{task[5]}}" name="dueDate" class="form-control" id="dueDate" placeholder="MM/DD/YYYY" data-flatpickr>
+                            </div>
+                        </div> <!-- / .row -->
+                    </div>
+                </div>
+                <!-- End Body -->
+
+                <!-- Footer -->
+                <div class="modal-footer pt-0">
+
+                    <!-- Button -->
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+                    <!-- Button -->
+                    <button type="submit" class="btn btn-primary" id="btnSaveEvent">Update</button>
+                </div>
+                <!-- End Footer -->
+            </form>
+        </div>
+    </div>
+</div>
+
+
+                                            {% endfor %}
+                                        {% else %}
+                                                <tr>
+                                                    <td colspan="4">No tasks found.</td>
+                                                </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div> <!-- / .table-responsive -->
+                        </div>
+                    </div>
+
+                </div> <!-- / .row -->
+
+
+
+            </div> <!-- / .container-fluid -->
+
+{% include 'footer.html' %}

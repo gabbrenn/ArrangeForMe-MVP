@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"  data-sidebar-behaviour="fixed" data-navigation-color="inverted" data-is-fluid="true">
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta content="Gab_brenn" name="author">
+        
+            <!-- Theme CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/theme.bundle.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/theme.rtl.bundle.css') }}">
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+        <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+        <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+        <link rel="stylesheet" href="myProjects/webProject/icofont/css/icofont.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <!-- no-JS fallback -->
+        <noscript>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&amp;display=swap">
+        </noscript>
+
+        
+        <!-- Page Title -->
+        <title>Dashboard | Dashly</title>
+    </head>
+    
+    <body>
+
+        <!-- NAVIGATION -->
+        <nav id="mainNavbar" class="navbar navbar-vertical navbar-expand-lg scrollbar bg-dark navbar-dark">
+            
+            <!-- Theme configuration (navbar) -->
+                  
+            <div class="container-fluid">
+                
+                <!-- Brand -->
+                <div class="dropdown navbar-brand">
+                    <a href="javascript: void(0);" class="dropdown-toggle no-arrow d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm mx-1 mx-lg-2 w-40px h-40px" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false" data-bs-offset="0,0">
+                        <div class="avatar avatar-circle avatar-sm ">
+                            <img src="{{url_for('static',filename='assets/images/profiles/user.png')}}" alt="..." class="avatar-img" width="40" height="40">
+                            <strong class="mb-0 ">{{username}}</strong>
+                            
+                        </div>
+                        
+                    </a>
+        
+                    <div class="dropdown-menu">
+
+                        <a class="dropdown-item" href="javascript: void(0);">Profile & account</a>
+                        <a class="dropdown-item" href="javascript: void(0);">Settings</a>
+        
+                        <hr class="dropdown-divider">
+        
+                        <a class="dropdown-item" href="{{url_for('logout')}}">Sign out</a>
+                    </div>
+                </div>
+
+                
+                
+        
+                <!-- Navbar toggler -->
+                <a href="javascript: void(0);" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#sidenavCollapse" aria-controls="sidenavCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </a>
+        
+                <!-- Collapse -->
+                <div class="collapse navbar-collapse" id="sidenavCollapse">
+        
+                    <!-- Navigation -->
+                    <ul class="navbar-nav mb-lg-7">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"  data-bs-toggle="modal" data-bs-target="#taskModal" id="btnAddTask">
+                                <i class="bi-plus-circle mx-1" style="font-size: 1.5rem;"></i>
+                                <span>Add Task</span>
+                            </a>                            
+                            
+                            
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'overdue' %}active{% endif %}" href="{{url_for('overdue')}}">
+                                <i class="bi-calendar-week mx-1" style="font-size: 1.5rem;"></i>
+                                <span>Overdue Task </span>
+                                {% if overduecheck %}
+                                <span class="badge text-bg-danger"> {{overduecheck}}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'dash' %}active{% endif %}" href="{{url_for('index')}}">
+                                <i class="bi-calendar-date mx-1" style="font-size: 1.5rem;"></i>
+                                <span>ToDay Task</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'upcoming' %}active{% endif %}" href="{{url_for('upcoming')}}">
+                                <i class="bi-calendar-week mx-1" style="font-size: 1.5rem;"></i>
+                                <span>Upcoming Task</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {% if active_page == 'team' %}active{% endif %}" href="{{url_for('team')}}">
+                                <i class="bi-people mx-1" style="font-size: 1.5rem;"></i>
+                                <span>Teams</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- End of Navigation -->
+                </div>
+                <!-- End of Collapse -->
+            </div>
+        </nav>
+        <!-- MAIN CONTENT -->
+        <main>
+
+            <!-- HEADER -->
+            <header class="container-fluid d-flex py-6 mb-4">
+            
+                <!-- Search -->
+                <!-- <form class="d-none d-md-inline-block me-auto">
+                    <div class="input-group input-group-merge">
+            
+                        <input type="text" class="form-control bg-light-green border-light-green w-250px" placeholder="Search..." aria-label="Search for any term">
+                        
+                        <span class="input-group-text bg-light-green border-light-green p-0">
+            
+                            <button class="btn btn-primary rounded-2 w-30px h-30px p-0 mx-1" type="button" aria-label="Search button">
+                                <svg viewBox="0 0 24 24" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M0.750 9.812 A9.063 9.063 0 1 0 18.876 9.812 A9.063 9.063 0 1 0 0.750 9.812 Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" transform="translate(-3.056 4.62) rotate(-23.025)"  /><path d="M16.221 16.22L23.25 23.25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>
+                            </button>
+                        </span>
+                      </div>
+                </form> -->
+            </header>
