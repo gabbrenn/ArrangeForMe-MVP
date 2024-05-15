@@ -1,78 +1,92 @@
-from flask import Flask, render_template, request, redirect, url_for,flash
+# Import necessary modules from Flask and extensions
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 from flask import session
 import secrets
 import bcrypt
 from datetime import datetime
 
+# Initialize the Flask application
 app = Flask(__name__)
-#app configuration
+
+# Configure MySQL database connection settings
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "root"
 app.config['MYSQL_DB'] = "task_master"
 mysql = MySQL(app)
-# Set your secret key
+
+# Generate a secret key for the session
 secret_key = secrets.token_hex(16)
 app.secret_key = secret_key
 
+# Route for the homepage
 @app.route('/')
 def index():
+    # Check if user is logged in
     if 'user' in session:
-        user_id=session['user']
+        # Retrieve user's ID from session
+        user_id = session['user']
+        # Create cursor for database operations
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE user_id = %s",(user_id,))
+        # Fetch user details from the database
+        cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
         user = cur.fetchone()
+        # Get today's date and time
         today = datetime.now().date()
         todaytime = datetime.now()
-        cur.execute("SELECT * FROM task WHERE DATE(due_date)=%s AND user_id = %s AND group_id IS NULL ORDER BY due_date ASC",(today,user_id))
+        # Fetch tasks due today for the logged-in user
+        cur.execute("SELECT * FROM task WHERE DATE(due_date)=%s AND user_id = %s AND group_id IS NULL ORDER BY due_date ASC", (today, user_id))
         tasks = cur.fetchall()
+        # Count overdue tasks
         cur.execute("SELECT COUNT(*) FROM task WHERE DATE(due_date) < %s AND user_id = %s AND group_id IS NULL AND status != %s", (today, user_id, 'Completed'))
         overduecheck = cur.fetchone()[0]
         cur.close()
 
-        return render_template('index.html',overduecheck=overduecheck,active_page='dash',useremail=user[2],username=user[1], tasks=tasks, today=todaytime)
+        # Render the index page with relevant data
+        return render_template('index.html', overduecheck=overduecheck, active_page='dash', useremail=user[2], username=user[1], tasks=tasks, today=todaytime)
     else:
+        # Redirect to sign-in page if user is not logged in
         return redirect(url_for('sign_in'))
 
-
+# Route for displaying overdue tasks
 @app.route('/overdue')
 def overdue():
     if 'user' in session:
-        user_id=session['user']
+        user_id = session['user']
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE user_id = %s",(user_id,))
+        cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
         user = cur.fetchone()
         today = datetime.now().date()
         todaytime = datetime.now()
-        cur.execute("SELECT * FROM task WHERE DATE(due_date)<%s AND user_id = %s AND group_id IS NULL AND status != %s ORDER BY due_date ASC",(today,user_id, 'Completed'))
+        cur.execute("SELECT * FROM task WHERE DATE(due_date)<%s AND user_id = %s AND group_id IS NULL AND status != %s ORDER BY due_date ASC", (today, user_id, 'Completed'))
         tasks = cur.fetchall()
         cur.close()
 
-        return render_template('overdue.html',active_page='overdue',useremail=user[2],username=user[1], tasks=tasks, today=todaytime)
+        return render_template('overdue.html', active_page='overdue', useremail=user[2], username=user[1], tasks=tasks, today=todaytime)
     else:
         return redirect(url_for('sign_in'))
 
-
-
+# Route for displaying upcoming tasks
 @app.route('/upcoming')
 def upcoming():
     if 'user' in session:
-        user_id=session['user']
+        user_id = session['user']
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE user_id = %s",(user_id,))
-        user = cur.fetchone() 
+        cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
+        user = cur.fetchone()
         today = datetime.now().date()
         todaytime = datetime.now()
-        cur.execute("SELECT * FROM task WHERE DATE(due_date)>%s AND user_id = %s AND group_id IS NULL ORDER BY due_date ASC",(today,user_id))
+        cur.execute("SELECT * FROM task WHERE DATE(due_date)>%s AND user_id = %s AND group_id IS NULL ORDER BY due_date ASC", (today, user_id))
         tasks = cur.fetchall()
         cur.execute("SELECT COUNT(*) FROM task WHERE DATE(due_date) < %s AND user_id = %s AND group_id IS NULL AND status != %s", (today, user_id, 'Completed'))
         overduecheck = cur.fetchone()[0]
         cur.close()
 
-        return render_template('upcoming.html',overduecheck=overduecheck,active_page='upcoming',useremail=user[2],username=user[1], tasks=tasks,today=todaytime)
+        return render_template('upcoming.html', overduecheck=overduecheck, active_page='upcoming', useremail=user[2], username=user[1], tasks=tasks, today=todaytime)
     else:
         return redirect(url_for('sign_in'))
 
+# Route for managing team tasks
 @app.route('/team', methods=['GET', 'POST'])
 def team():
     if 'user' in session:
@@ -88,17 +102,17 @@ def team():
             dueDate = request.form['dueDate']
             user_id = session.get('user')  # Retrieve user ID from session
 
-                # Perform basic validation
+            # Perform basic validation
             if not all([title, priority, dueDate]):
-                error="Fill all Input"
+                error = "Fill all Input"
 
-                # Insert data into the database
+            # Insert data into the database
             cur = mysql.connection.cursor()
             cur.execute("SELECT MAX(task_id) FROM task")
             last_task_id = cur.fetchone()[0] + 1
             group_id = int(str(last_task_id) + str(user_id))
             cur.execute("INSERT INTO task (title, priority, description, due_date, user_id, group_id) VALUES (%s, %s, %s, %s, %s, %s)", 
-                    (title, priority, description, dueDate, user_id, group_id))
+                        (title, priority, description, dueDate, user_id, group_id))
             mysql.connection.commit()
             cur.close()
             return redirect(url_for('team'))
@@ -124,10 +138,11 @@ def team():
 
         task_id = request.args.get('id')
 
-        return render_template('team.html',overduecheck=overduecheck,active_page='team',today=todaytime, useremail=user[2], username=user[1], mytasks=mytasks,othertasks=othertasks, task_id=task_id)
+        return render_template('team.html', overduecheck=overduecheck, active_page='team', today=todaytime, useremail=user[2], username=user[1], mytasks=mytasks, othertasks=othertasks, task_id=task_id)
     else:
         return redirect(url_for('sign_in'))
-  
+
+# Route for displaying task details
 @app.route('/task-detail/<task>')
 def task_detail(task):
     if 'user' in session:
@@ -152,8 +167,7 @@ def task_detail(task):
         flash('Please log in to view task details', 'error')
         return redirect(url_for('sign_in'))  # Redirect to login page
 
-
-
+# Route for signing in
 @app.route('/sign-in', methods=['GET','POST'])
 def sign_in():
     if 'user' in session:
@@ -170,14 +184,15 @@ def sign_in():
             session['user'] = user[0] 
             return redirect(url_for('index'))
         else:
-            return render_template('sign-in.html',email=email, error='Invalid email or password!')
+            return render_template('sign-in.html', email=email, error='Invalid email or password!')
     return render_template('sign-in.html')
 
-
+# Route for signing up
 @app.route('/sign-up')
 def sign_up():
     return render_template('sign-up.html')
 
+# Route for submitting sign-up form
 @app.route('/submit', methods=['POST'])
 def submit():
     if request.method == 'POST':
@@ -201,7 +216,8 @@ def submit():
         cur.close()
         
         return redirect(url_for('sign_in'))
-    
+
+# Route for adding a task
 @app.route('/add-task', methods=['POST'])
 def add_task():
     if request.method == 'POST':
@@ -213,7 +229,7 @@ def add_task():
 
         # Perform basic validation
         if not all([title, priority, dueDate]):
-            error="Fill all Input"
+            error = "Fill all Input"
 
         # Insert data into the database
         cur = mysql.connection.cursor()
@@ -223,7 +239,7 @@ def add_task():
         cur.close()
         return redirect(url_for('index'))
 
-
+# Route for updating a task
 @app.route('/update-task/<back>', methods=['POST'])
 def update_task(back):
     if request.method == 'POST':
@@ -235,9 +251,9 @@ def update_task(back):
         dueDate = request.form['dueDate']
         # Perform basic validation
         if not all([title, priority, dueDate]):
-            error="Fill all Input"
+            error = "Fill all Input"
 
-        # Insert data into the database
+        # Update task in the database
         cur = mysql.connection.cursor()
         cur.execute("""
                     UPDATE task 
@@ -248,7 +264,7 @@ def update_task(back):
         cur.close()
         return redirect(url_for(back))
 
-    
+# Route for adding a member to a task
 @app.route('/addmember', methods=['POST'])
 def addmember():
     if 'user' in session:
@@ -285,40 +301,44 @@ def addmember():
     else:
         return redirect(url_for('sign_in'))
 
+# Route for deleting a task
 @app.route('/delete/<id_data>/<back>', methods=['POST','GET'])
-def delete(id_data,back):
+def delete(id_data, back):
     flash("Task Deleted")
-    cur= mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     cur.execute("DELETE FROM task WHERE task_id = %s", (id_data,))
     mysql.connection.commit()
     return redirect(url_for(back))
 
+# Route for marking a task as completed
 @app.route('/complete/<id_data>/<back>', methods=['POST','GET'])
-def complete(id_data,back):
+def complete(id_data, back):
     flash("Task Completed")
-    cur= mysql.connection.cursor()
+    cur = mysql.connection.cursor()
     cur.execute("""
                 UPDATE task 
                 SET status = %s WHERE task_id = %s
-                """, ('Completed',id_data))
+                """, ('Completed', id_data))
     mysql.connection.commit()
     return redirect(url_for(back))
 
+# Route for removing oneself from a team task
 @app.route('/remove/<id_data>/<back>', methods=['POST','GET'])
-def remove(id_data,back):
+def remove(id_data, back):
     if 'user' in session:
         user_id = session['user']
         flash("You Left in Team Task")
-        cur= mysql.connection.cursor()
-        cur.execute("DELETE FROM user_groups WHERE user_id = %s AND group_id = %s", (user_id,id_data))
+        cur = mysql.connection.cursor()
+        cur.execute("DELETE FROM user_groups WHERE user_id = %s AND group_id = %s", (user_id, id_data))
         mysql.connection.commit()
         return redirect(url_for(back))
 
-    
+# Route for logging out
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+# Run the Flask application
 if __name__ == '__main__':
     app.run(debug=True)
