@@ -16,10 +16,17 @@ ArrangeForMe is a simple task manager user can create a profile, and start creat
 ![4](https://github.com/gabbrenn/MVP/assets/103499307/a39d5844-f479-4bc7-972a-550d99298a47)
 ![5](https://github.com/gabbrenn/MVP/assets/103499307/ea8a0c6a-3340-4b6a-929e-1857abdaf5cc)
 
+# Related projects
+<ul>
+  <li><a href="https://todoist.com/" target="_blank">Todoist</a></li>
+  <li><a href="https://clickup.com/" target="_blank">ClickUp</a></li>
+</ul>
+
 # Language
 **HTML**<br>
-**Bootstrap**<br>
-**Django**
+**Bootstrap:** For Style and Javascript<br>
+**Flask:** For Backend<br>
+**MYSQLI:** For Database<br>
 
 # About The Author
 **GABIRO Vladimir Brenn**
